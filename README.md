@@ -9,3 +9,8 @@
 
 - run server
   `npm start`
+  
+  
+  - Test route 
+  
+  GET  `https://little-tags.herokuapp.com/`
