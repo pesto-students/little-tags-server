@@ -1,3 +1,11 @@
-# bare-bones template
+# Tittle tags server
 
-This is a barebones repository. Please contact the instructor on how to proceed ahead. You should replace this page with more instructions once you've finalised what to do. 
+- Mock server of fakestore api `https://fakestoreapi.com/products`
+
+## setup
+
+- install dependencies
+  `npm install`
+
+- run server
+  `npm start`

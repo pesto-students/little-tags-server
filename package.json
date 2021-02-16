@@ -1,0 +1,26 @@
+{
+  "name": "little-tags-server",
+  "version": "1.0.0",
+  "description": "mock server of fakestore api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pesto-students/little-tags-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.2.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.3.1",
+    "mongoose": "^5.8.9",
+    "request": "^2.88.0"
+  },
+  "bugs": {
+    "url": "https://github.com/pesto-students/little-tags-server/issues"
+  },
+  "homepage": "https://github.com/pesto-students/little-tags-server#readme"
+}
