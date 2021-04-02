@@ -5,7 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon server"
+
+    "server": "env-cmd  -f ./config/dev.env nodemon server",
+    "dev": "env-cmd  -f ./config/dev.env nodemon",
+    "test": "env-cmd -f ./config/test.env jest --watch"
+  },
+  "jest": {
+    "testEmvironment": "node"
+
   },
   "repository": {
     "type": "git",
@@ -14,12 +21,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "config": "^3.2.5",
-    "ejs": "^3.1.6",
+
+
     "express": "^4.17.1",
     "express-validator": "^6.3.1",
     "mongoose": "^5.8.9",
-    "request": "^2.88.0"
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express-jwt": "^6.0.0",
+    "jsonwebtoken": "^8.4.0",
+    "bcryptjs": "2.4.3"
+  },
+  "devDependencies": {
+    "env-cmd": "10.1.0",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.2",
+    "supertest": "^6.1.3"
   },
   "bugs": {
     "url": "https://github.com/pesto-students/little-tags-server/issues"
