@@ -1,11 +1,4 @@
-const express = require("express");
-
-const app = express();
-
-//Init Middleware
-app.use(express.json({ extended: false }));
-
-app.get("/", (req, res) => res.send("API running"));
+const app = require("./app");
 
 const PORT = process.env.PORT || 5000;
 
