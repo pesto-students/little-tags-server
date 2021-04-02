@@ -5,12 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
+
     "server": "env-cmd  -f ./config/dev.env nodemon server",
     "dev": "env-cmd  -f ./config/dev.env nodemon",
     "test": "env-cmd -f ./config/test.env jest --watch"
   },
   "jest": {
     "testEmvironment": "node"
+
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+
+
     "express": "^4.17.1",
     "express-validator": "^6.3.1",
     "mongoose": "^5.8.9",
@@ -37,5 +41,12 @@
   "bugs": {
     "url": "https://github.com/pesto-students/little-tags-server/issues"
   },
-  "homepage": "https://github.com/pesto-students/little-tags-server#readme"
+  "homepage": "https://github.com/pesto-students/little-tags-server#readme",
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1"
+  }
 }
