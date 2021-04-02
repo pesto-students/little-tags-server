@@ -35,7 +35,6 @@ router.post(
   ],
   async (req, res) => {
     const errors = validationResult(req);
-    console.log(req.body);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -50,7 +49,6 @@ router.post(
           .status(400)
           .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
-      console.log(admin);
       const isMatch = await verifyPasswordHash(password, admin.password);
 
       if (!isMatch) {
@@ -99,7 +97,6 @@ router.post(
   ],
   async (req, res) => {
     const errors = validationResult(req);
-    console.log(req.body);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
