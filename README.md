@@ -13,9 +13,11 @@
   `npm install`
 
 - run server
-  `npm start`
+  `npm run server`
   
   
-  - Test route 
+- run test
+  `npm rrun test`
   
-  GET  `https://little-tags.herokuapp.com/`
+  ![test-report](https://user-images.githubusercontent.com/20106622/113484562-9dfd7100-94c6-11eb-9d57-cc2cd2bd75af.PNG)
+
