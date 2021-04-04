@@ -5,7 +5,7 @@ const connectDB = async () => {
     await mongoose.connect(process.env.DB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      dbName: "onetagshop",
+      dbName: process.env.DB,
     });
     console.log(":) mongodb connected");
   } catch (error) {

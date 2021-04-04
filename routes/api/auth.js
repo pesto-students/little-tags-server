@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
 
 const { check, validationResult, body } = require("express-validator");
 const {
   generatePasswordHash,
   verifyPasswordHash,
+  getToken,
 } = require("../../_helpers/password-service");
 
 // middleware
@@ -13,7 +14,7 @@ const requiredRole = require("../../middleware/role");
 const auth = require("../../middleware/auth");
 
 const Admin = require("../../models/Admin");
-const User = require("../../models/Admin");
+const User = require("../../models/User");
 
 // @route GET /api/auth/v1/__test
 // @desc Test route
@@ -39,10 +40,10 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
     // Check if user exists
+    const { email, password } = req.body;
     try {
-      let admin = await Admin.findOne({ email });
+      let admin = await Admin.findOne({ email: req.body.email });
 
       if (!admin) {
         return res
@@ -58,22 +59,17 @@ router.post(
       }
 
       const payload = {
-        admin: {
-          id: admin.id,
-          role: admin.role,
-          approved: admin.role_approved,
-        },
+        id: admin.id,
+        role: admin.role,
+        approved: admin.role_approved,
       };
 
-      jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: "5 days" },
-        (err, token) => {
-          if (err) throw err;
-          res.status(201).json({ message: "Login success", token: token });
-        }
-      );
+      const token = await getToken(payload);
+      const { name, email } = admin;
+      res.status(201).json({
+        message: "Login success",
+        data: { user: { name, email }, token: token },
+      });
     } catch (err) {
       console.log(err);
       res.status(500).send("Server Error");
@@ -134,5 +130,74 @@ router.post(
     }
   }
 );
+
+// @route POST api/auth/v1/google_login
+// @desc SIGNUP AS USER
+// @access PUBLIC
+
+router.post("/google_login", async (req, res) => {
+  try {
+    const client = new OAuth2Client(process.env.GOOGLE_AUTH_CLIENT_ID);
+    const { tokenId } = req.body;
+    console.log(tokenId);
+    const clientVerificationResponse = await client.verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_AUTH_CLIENT_ID,
+    });
+    console.log(clientVerificationResponse.payload);
+    const {
+      email_verified,
+      name,
+      email,
+      picture,
+    } = clientVerificationResponse.payload;
+
+    if (!email_verified) {
+      return res.status(400).json({
+        success: false,
+        message: "Login failed, email not verified by google",
+      });
+    }
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      //create a new user in the db
+      const password = await generatePasswordHash(
+        email + process.env.PASSWORD_SECRET
+      );
+      const new_user = new User({
+        name: name,
+        email: email,
+        password: password,
+        picture: picture,
+        auth_provider: "google",
+      }).save();
+
+      const payload = {
+        id: new_user.id,
+      };
+
+      const token = await getToken(payload);
+
+      res.status(201).json({
+        message: "Login success",
+        data: { user: { name, email, picture }, token: token },
+      });
+    } else {
+      const payload = {
+        id: user.id,
+      };
+      const token = await getToken(payload);
+
+      res.status(201).json({
+        message: "Login success",
+        data: { user: { name, email, picture }, token: token },
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
