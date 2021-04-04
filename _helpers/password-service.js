@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const generatePasswordHash = async (password) => {
   const salt = await bcrypt.genSalt(10);
@@ -13,4 +14,12 @@ const verifyPasswordHash = async (password, passwordHash) => {
   return isMatch;
 };
 
-module.exports = { generatePasswordHash, verifyPasswordHash };
+const getToken = async (payload) => {
+  const token = await jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "5 days",
+  });
+
+  return token;
+};
+
+module.exports = { generatePasswordHash, verifyPasswordHash, getToken };
