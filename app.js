@@ -19,7 +19,9 @@ app.get("/", (req, res) =>
 // routes
 
 const auth = require("./routes/api/auth");
+const product = require("./routes/api/product");
 
 app.use("/api/auth/v1/", auth);
+app.use("/api/products/v1/", product);
 
 module.exports = app;

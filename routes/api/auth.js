@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { OAuth2Client } = require("google-auth-library");
 
-const { check, validationResult, body } = require("express-validator");
+const { check, validationResult } = require("express-validator");
 const {
   generatePasswordHash,
   verifyPasswordHash,
@@ -19,7 +19,7 @@ const User = require("../../models/User");
 // @route GET /api/auth/v1/__test
 // @desc Test route
 // @access PUBLIC
-router.get("/__test", (req, res) => res.send("auth routes working :)"));
+router.get("/__test", auth, (req, res) => res.send("auth routes working :)"));
 
 // @route POST /api/auth/v1/login
 // @desc LOGIN with email and password
@@ -59,9 +59,11 @@ router.post(
       }
 
       const payload = {
-        id: admin.id,
-        role: admin.role,
-        approved: admin.role_approved,
+        user: {
+          id: admin.id,
+          role: admin.role,
+          approved: admin.role_approved,
+        },
       };
 
       const token = await getToken(payload);
@@ -174,7 +176,10 @@ router.post("/google_login", async (req, res) => {
       }).save();
 
       const payload = {
-        id: new_user.id,
+        user: {
+          id: new_user.id,
+          role: "user",
+        },
       };
 
       const token = await getToken(payload);
@@ -185,7 +190,10 @@ router.post("/google_login", async (req, res) => {
       });
     } else {
       const payload = {
-        id: user.id,
+        user: {
+          id: user.id,
+          role: "user",
+        },
       };
       const token = await getToken(payload);
 
