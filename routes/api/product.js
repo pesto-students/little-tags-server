@@ -18,12 +18,42 @@ router.get("/__test", [auth, role("admin")], async (req, res) => {
   }
 });
 
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const page = req.query.page ? req.query.page : 1;
     const skip = (page - 1) * 10;
     const limit = page * 10;
-    const products = await Product.find({}).skip(skip).limit(limit);
+
+    const filterQuery = {};
+    const orderByQuery = {};
+    if (req.query.fromPrice || req.query.toPrice || req.query.priceOrder) {
+      const fromPrice = req.query.fromPrice ? parseInt(req.query.fromPrice) : 0;
+      const toPrice = req.query.toPrice
+        ? parseInt(req.query.toPrice)
+        : Number.MAX_SAFE_INTEGER;
+
+      filterQuery.price = { $gte: fromPrice, $lte: toPrice };
+      const priceOrder = req.query.priceOrder ? req.query.priceOrder : -1;
+      orderByQuery.price = priceOrder;
+    }
+
+    if (req.query.color) {
+      const color = req.query.color;
+      filterQuery.color = color;
+    }
+
+    orderByQuery.date = req.query.orderbyDate ? req.query.orderbyDate : -1;
+
+    if (req.query.category) {
+      const category = req.query.category;
+      filterQuery.category = category;
+    }
+
+    console.log("filter:", filterQuery);
+    const products = await Product.find(filterQuery)
+      .skip(skip)
+      .limit(limit)
+      .sort(orderByQuery);
     res.status(200).json({ success: true, data: products });
   } catch (error) {
     console.log(error);
